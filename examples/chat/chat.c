@@ -35,7 +35,7 @@ struct chat_actor_arg_t
 
 static void chat_actor (zsock_t *pipe, void *_args)
 {
-    struct chat_actor_arg_t *args = (struct chat_actor_arg_t *)_args;
+    struct chat_actor_arg_t *args = (struct chat_actor_arg_t *) _args;
     zyre_t *node = zyre_new (args->name);
     if (!node)
         return; //  Could not create new node
@@ -45,17 +45,27 @@ static void chat_actor (zsock_t *pipe, void *_args)
         cert = zcert_new ();
         assert (cert);
         zyre_set_zcert (node, cert);
-        zcert_destroy(&cert);
+        zcert_destroy (&cert);
     }
 
     zyre_start (node);
     zyre_join (node, "CHAT");
     zsock_signal (pipe, 0); //  Signal "ready" to caller
-    zyre_print(node);
-
+    zyre_print (node);
     bool terminated = false;
     zpoller_t *poller = zpoller_new (pipe, zyre_socket (node), NULL);
     while (!terminated) {
+        zlist_t *peerlist = zyre_peers (node); // returns list of UUIDs of the peers. Not the same as name
+        assert(peerlist);
+        void *peer_node = zlist_first (peerlist);
+        int n = 0;
+        while (peer_node) {
+            (void *)peer_node; // peer_node is the UUID string for the peer
+            peer_node = zlist_next (peerlist);
+            n++;
+        }
+        zlist_destroy (&peerlist);
+
         void *which = zpoller_wait (poller, -1);
         if (which == pipe) {
             zmsg_t *msg = zmsg_recv (which);
@@ -66,8 +76,19 @@ static void chat_actor (zsock_t *pipe, void *_args)
             if (streq (command, "$TERM"))
                 terminated = true;
             else if (streq (command, "SHOUT")) {
-                char *string = zmsg_popstr (msg);
-                zyre_shouts (node, "CHAT", "%s", string);
+                // char *string = zmsg_popstr (msg);
+                // char *eom = zmsg_popstr (msg);
+                // zmsg_t *nmsg = zmsg_new();
+                // assert(nmsg);
+                // zmsg_addstr(nmsg, string);
+                // if (eom)
+                // {
+                //     zmsg_addstr(nmsg, eom);
+                // }
+                zyre_shout (
+                  node, "CHAT",
+                  &msg); // this is sufficient to send the message because command has already been popped out
+                // zyre_shouts (node, "CHAT", "%s", string);
             } else {
                 puts ("E: invalid message to actor");
                 assert (false);
@@ -81,14 +102,21 @@ static void chat_actor (zsock_t *pipe, void *_args)
             char *name = zmsg_popstr (msg);
             char *group = zmsg_popstr (msg);
             char *message = zmsg_popstr (msg);
+            char *eom = zmsg_popstr (msg);
 
             if (streq (event, "ENTER"))
                 printf ("%s has joined the chat\n", name);
-            else if (streq (event, "EXIT"))
+            else if (streq (event, "EXIT")) {
                 printf ("%s has left the chat\n", name);
-            else if (streq (event, "SHOUT"))
-                printf ("%s: %s\n", name, message);
-            else if (streq (event, "EVASIVE"))
+                // zmsg_print(msg);
+            } else if (streq (event, "SHOUT")) {
+                printf ("%s[%s]: %s", name, peer, message);
+                if (eom) {
+                    printf (" <>EOM: %s\n", eom);
+                    free (eom);
+                } else
+                    printf (" <>No EOM\n");
+            } else if (streq (event, "EVASIVE"))
                 printf ("%s is being evasive\n", name);
             else if (streq (event, "SILENT"))
                 printf ("%s is being silent\n", name);
@@ -115,8 +143,7 @@ int main (int argc, char *argv[])
         exit (0);
     }
     struct chat_actor_arg_t arglist = {.name = argv[1], .encryption = false};
-    if (argc == 3)
-    {
+    if (argc == 3) {
         arglist.encryption = true;
     }
     zactor_t *actor = zactor_new (chat_actor, &arglist);
@@ -127,7 +154,12 @@ int main (int argc, char *argv[])
         if (!fgets (message, 1024, stdin))
             break;
         message[strlen (message) - 1] = 0; // Drop the trailing linefeed
-        zstr_sendx (actor, "SHOUT", message, NULL);
+        zmsg_t *msg = zmsg_new ();
+        zmsg_addstr (msg, "SHOUT");
+        zmsg_addstr (msg, message);
+        zmsg_addstr (msg, "MOE");
+        zmsg_send (&msg, actor);
+        // zstr_sendx (actor, "SHOUT", message, NULL);
     }
     zactor_destroy (&actor);
     return 0;
