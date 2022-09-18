@@ -248,6 +248,12 @@ zlist_t *QmlZyre::peers () {
 };
 
 ///
+//  Return zhash of current peer names against peer ids.
+zhash_t *QmlZyre::peers_identity () {
+    return zyre_peers_identity (self);
+}
+
+///
 //  Return zlist of current peers of this group.
 zlist_t *QmlZyre::peersByGroup (const QString &name) {
     return zyre_peers_by_group (self, name.toUtf8().data());

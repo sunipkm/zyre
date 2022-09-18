@@ -243,6 +243,11 @@
         <return type = "zlist" fresh = "1" />
     </method>
 
+    <method name = "peer identities">
+        Return zhash of current peer names, keyed by peer ids.
+        <return type = "zhash" fresh = "1" />
+    </method>
+
     <method name = "peers by group">
         Return zlist of current peers of this group.
         <argument name = "name" type = "string" />

@@ -167,6 +167,9 @@ uses
     // Return zlist of current peer ids.
     function Peers: IZlist;
 
+    // Return zhash of current peer names against peer ids.
+    function PeersIdentity: IZhash;
+
     // Return zlist of current peers of this group.
     function PeersByGroup(const Name: string): IZlist;
 
@@ -412,6 +415,9 @@ uses
 
     // Return zlist of current peer ids.
     function Peers: IZlist;
+
+    // Return zhash of current peer names.
+    function PeersIdentity: IZhash;
 
     // Return zlist of current peers of this group.
     function PeersByGroup(const Name: string): IZlist;
@@ -769,6 +775,11 @@ uses
   function TZyre.Peers: IZlist;
   begin
     Result := TZlist.Wrap(zyre_peers(FHandle), true);
+  end;
+
+  function TZyre.PeersIdentity: IZhash;
+  begin
+    Result := TZhash.Wrap(zyre_peers_identity(FHandle), true);
   end;
 
   function TZyre.PeersByGroup(const Name: string): IZlist;

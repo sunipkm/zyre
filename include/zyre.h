@@ -184,6 +184,11 @@ ZYRE_EXPORT int
 ZYRE_EXPORT zlist_t *
     zyre_peers (zyre_t *self);
 
+// Returns zhash of current peer names, with peer identity as key.
+// Caller owns return value and must destroy it when done.
+ZYRE_EXPORT zhash_t *
+    zyre_peers_identity (zyre_t *self);
+
 //  Return zlist of current peers of this group.
 //  Caller owns return value and must destroy it when done.
 ZYRE_EXPORT zlist_t *

@@ -60,6 +60,7 @@ Zyre version 2.0.0 stable, released on 2017/01/20
   - zyre_set_evasive_timeout
   - zyre_set_expired_timeout
   - zyre_peers_by_group
+  - zyre_peers_identity
 
   See doc/zyre.txt for more information.
 

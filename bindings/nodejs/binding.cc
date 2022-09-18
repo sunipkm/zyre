@@ -64,6 +64,7 @@ NAN_MODULE_INIT (Zyre::Init) {
     Nan::SetPrototypeMethod (tpl, "whispers", _whispers);
     Nan::SetPrototypeMethod (tpl, "shouts", _shouts);
     Nan::SetPrototypeMethod (tpl, "peers", _peers);
+    Nan::SetPrototypeMethod (tpl, "peersIdentity", _peers_identity);
     Nan::SetPrototypeMethod (tpl, "peersByGroup", _peers_by_group);
     Nan::SetPrototypeMethod (tpl, "ownGroups", _own_groups);
     Nan::SetPrototypeMethod (tpl, "peerGroups", _peer_groups);
@@ -580,6 +581,15 @@ NAN_METHOD (Zyre::_peers) {
     //  Don't yet know how to return a new object
     //      zlist->Wrap (info.This ());
     //      info.GetReturnValue ().Set (info.This ());
+        info.GetReturnValue ().Set (Nan::New<Boolean>(true));
+    }
+}
+
+NAN_METHOD (Zyre::_peers_identity) {
+    Zyre *zyre = Nan::ObjectWrap::Unwrap <Zyre> (info.Holder ());
+    zhash_t *result = zyre_peers_identity (zyre->self);
+    Zhash *zhash_result = new Zhash (result);
+    if (zhash_result) {
         info.GetReturnValue ().Set (Nan::New<Boolean>(true));
     }
 }

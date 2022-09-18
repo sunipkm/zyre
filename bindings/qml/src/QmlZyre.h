@@ -174,6 +174,9 @@ public slots:
     //  Return zlist of current peer ids.
     zlist_t *peers ();
 
+    //  Returns zhash of current peer names against ids.
+    zhash_t *peers_identity();
+
     //  Return zlist of current peers of this group.
     zlist_t *peersByGroup (const QString &name);
 

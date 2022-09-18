@@ -317,6 +317,13 @@ public class Zyre implements AutoCloseable {
         return new Zlist (__peers (self));
     }
     /*
+    Return zhash of current peer names against peer ids.
+    */
+    native static long __peersIdentity (long self);
+    public Zhash peersIdentity () {
+        return new Zhash (__peersIdentity (self));
+    }
+    /*
     Return zlist of current peers of this group.
     */
     native static long __peersByGroup (long self, String name);

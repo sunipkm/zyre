@@ -727,6 +727,18 @@ zyre_node_recv_api (zyre_node_t *self)
     else
     if (streq (command, "PEERS"))
         zsock_send (self->pipe, "p", zhash_keys (self->peers));
+    else 
+    if (streq (command, "PEER IDENTITIES")) {
+        zhash_t *list = zhash_new ();
+        if (list) {
+            zyre_peer_t *tpnode = zhash_first (self->peers);
+            while (tpnode) {
+                zhash_insert (list, zyre_peer_identity(tpnode), strdup(zyre_peer_name(tpnode)));
+                tpnode = zhash_next(self->peers);
+            }
+        }
+        zsock_send(self->pipe, "p", list);
+    }
     #ifdef ZYRE_BUILD_DRAFT_API
     //  DRAFT-API: Security
     else

@@ -270,6 +270,13 @@ Java_org_zeromq_zyre_Zyre__1_1peers (JNIEnv *env, jclass c, jlong self)
 }
 
 JNIEXPORT jlong JNICALL
+Java_org_zeromq_zyre_Zyre__1_1peersIdentity (JNIEnv *env, jclass c, jlong self)
+{
+    jlong peers_identities_ = (jlong) (intptr_t) zyre_peers_identity ((zyre_t *) (intptr_t) self);
+    return peers_identities_;
+}
+
+JNIEXPORT jlong JNICALL
 Java_org_zeromq_zyre_Zyre__1_1peersByGroup (JNIEnv *env, jclass c, jlong self, jstring name)
 {
     char *name_ = (char *) (*env)->GetStringUTFChars (env, name, NULL);

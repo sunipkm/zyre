@@ -335,6 +335,14 @@ QZlist * QZyre::peers ()
 }
 
 ///
+//  Return zhash of current peer names against peer ids.
+QZhash * QZyre::peers_identity ()
+{
+    QZhash *rv = new QZhash (zyre_peers_identity (self));
+    return rv;
+}
+
+///
 //  Return zlist of current peers of this group.
 QZlist * QZyre::peersByGroup (const QString &name)
 {

@@ -204,6 +204,12 @@ class Zyre(object):
         """
         return lib.zyre_peers(self._p)
 
+    def peers_identity(self):
+        """
+        Return zhash of current peer ids.
+        """
+        return lib.zyre_peers_identity(self._p)
+
     def peers_by_group(self, name):
         """
         Return zlist of current peers of this group.

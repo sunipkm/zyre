@@ -55,16 +55,17 @@ static void chat_actor (zsock_t *pipe, void *_args)
     bool terminated = false;
     zpoller_t *poller = zpoller_new (pipe, zyre_socket (node), NULL);
     while (!terminated) {
-        zlist_t *peerlist = zyre_peers (node); // returns list of UUIDs of the peers. Not the same as name
+        zhash_t *peerlist = zyre_peers_identity (node); // returns list of UUIDs of the peers. Not the same as name
         assert(peerlist);
-        void *peer_node = zlist_first (peerlist);
+        void *peer_node = zhash_first (peerlist);
         int n = 0;
         while (peer_node) {
-            (void *)peer_node; // peer_node is the UUID string for the peer
-            peer_node = zlist_next (peerlist);
+            // (void *)peer_node; // peer_node is the UUID string for the peer
+            printf("%d> Name: %s, UUID: %s\n", n, (char *) peer_node, zhash_cursor(peerlist));
+            peer_node = zhash_next (peerlist);
             n++;
         }
-        zlist_destroy (&peerlist);
+        zhash_destroy (&peerlist);
 
         void *which = zpoller_wait (poller, -1);
         if (which == pipe) {

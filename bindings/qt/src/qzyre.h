@@ -173,6 +173,9 @@ public:
     //  Return zlist of current peer ids.
     QZlist * peers ();
 
+    //  Return zhash of current peer names against peer ids.
+    QZhash * peers_identity ();
+
     //  Return zlist of current peers of this group.
     QZlist * peersByGroup (const QString &name);
 

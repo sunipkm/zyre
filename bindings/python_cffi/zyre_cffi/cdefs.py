@@ -5032,6 +5032,10 @@ int
 zlist_t *
     zyre_peers (zyre_t *self);
 
+// Return zhash of current peer names keyed by peer ids.
+zhash_t *
+    zyre_peers_identity (zyre_t *self);
+
 // Return zlist of current peers of this group.
 zlist_t *
     zyre_peers_by_group (zyre_t *self, const char *name);

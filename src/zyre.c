@@ -627,6 +627,22 @@ zyre_peers (zyre_t *self)
 
 
 //  --------------------------------------------------------------------------
+//  Return zhash of current peers. The caller owns this hashtable and should
+//  destroy it when finished with it.
+
+zhash_t *
+zyre_peers_identity (zyre_t *self)
+{
+    assert(self);
+
+    zhash_t *peer_identities;
+    zstr_send (self->actor, "PEER IDENTITIES");
+    zsock_recv (self->actor, "p", &peer_identities);
+    return peer_identities;
+}
+
+
+//  --------------------------------------------------------------------------
 //  Return zlist of current peers of this group. The caller owns this list and
 //  should destroy it when finished with it.
 

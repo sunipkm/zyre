@@ -190,6 +190,9 @@ type
   // Return zlist of current peer ids.
   function zyre_peers(self: PZyre): PZlist; cdecl; external lib_zyre {$IFDEF MSWINDOWS}delayed{$ENDIF};
 
+  // Return zhash of current peer names keyed by peer ids.
+  function zyre_peers_identity (self: PZyre): PZhash; cdecl; external lib_zyre {$IFDEF MSWINDOWS}delayed{$ENDIF};
+
   // Return zlist of current peers of this group.
   function zyre_peers_by_group(self: PZyre; Name: PAnsiChar): PZlist; cdecl; external lib_zyre {$IFDEF MSWINDOWS}delayed{$ENDIF};
 
